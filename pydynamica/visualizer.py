@@ -10,17 +10,29 @@ from collections import deque
 
 from env import Env
 
-x = deque(maxlen = 20)
+window_len = 20
+
+""" DATA QUEUE INIT """
+x = deque(maxlen = window_len)
 x.append(1)
 
-y = deque(maxlen=20)
+y = deque(maxlen=window_len)
 y.append(0)
 
-food = deque(maxlen=20)
-minerals = deque(maxlen=20)
+food = deque(maxlen=window_len)
+minerals = deque(maxlen=window_len)
 food.append(0)
 minerals.append(0)
 
+richest = deque(maxlen=window_len)
+poorest = deque(maxlen=window_len)
+disparity = deque(maxlen=window_len)
+
+richest.append(0)
+poorest.append(0)
+disparity.append(0)
+
+""" DASHBOARD AND APP SETUP """
 app = dash.Dash(__name__)
 app.layout = html.Div (
     [
@@ -28,6 +40,8 @@ app.layout = html.Div (
         dcc.Graph(id='gdp-graph', animate=True),
         html.H1(children="Avg Internal Values"),
         dcc.Graph(id='food-graph', animate=True),
+        html.H1(children="Wealth & Society"),
+        dcc.Graph(id="wealth-graph", animate=True),
         dcc.Interval(
             id="graph-update",
             interval = 1000,
@@ -36,43 +50,58 @@ app.layout = html.Div (
     ]
 )
 
+""" SIM ENV SETUP """
 env = Env(num_agents=100, dim=(100,100))
 data = []
 
+""" SIM & DATA COLLECTION"""
+def create_trace(data, title):
+    return plotly.graph_objs.Scatter(
+        x = list(x),
+        y = list(data),
+        name=title,
+        mode = "lines+markers"
+    )
+
 @app.callback(
-    [Output('gdp-graph', 'figure'), Output('food-graph', 'figure')],
+    [Output('gdp-graph', 'figure'), Output('food-graph', 'figure'), Output('wealth-graph', 'figure')],
     [Input('graph-update', 'n_intervals')]
 )
 def update_graph_scatter(n):
-    x.append(x[-1] + 1)
     out = env.step()
+
+    x.append(x[-1] + 1)
     y.append(out['gdp_per_cap'])
     
     food.append(out['avg_food_value'])
     minerals.append(out['avg_mineral_value'])
     
-    data = plotly.graph_objs.Scatter(
-        x = list(x),
-        y = list(y),
-        name="GDP Per Capita",
-        mode="lines+markers"
-    )
+    richest.append(out['max_wealth'])
+    poorest.append(out['min_wealth'])
+    disparity.append(out['max_wealth'] - out['min_wealth'])
+    
+    gdp_trace = create_trace(y, "GDP per capita")
 
-    food_trace = plotly.graph_objs.Scatter(
-            x = list(x),
-            y = list(food),
-            name="Average Food Value",
-            mode="lines+markers")
-    mineral_trace = plotly.graph_objs.Scatter(
-            x = list(x),
-            y = list(minerals),
-            name="Average Mineral Value",
-            mode="lines+markers")
+    richest_trace = create_trace(richest, "Wealth of Richest Agent")
+    poorest_trace = create_trace(poorest, "Wealth of Poorest Agent")
+    disparity_trace = create_trace(disparity, "Wealth Disparity")
+
+    food_trace = create_trace(food, "Average food value")
+    mineral_trace = create_trace(minerals, "Average mineral value")
    
-    gdp_out = {'data': [data],'layout': go.Layout(xaxis=dict(range=[min(x), max(x)]), yaxis=dict(range = [min(y), max(y)]))}
-    food_out = {'data': [food_trace, mineral_trace], 'layout': go.Layout(xaxis=dict(range=[min(x), max(x)]), yaxis=dict(range = [min(min(food), min(minerals)), max(max(food), max(minerals))]))}
+    x_range = dict(range=[min(x), max(x)])
 
-    return gdp_out, food_out 
+    gdp_out = {'data': [gdp_trace],
+            'layout': go.Layout(xaxis= x_range, 
+                yaxis=dict(range = [min(y), max(y)]))}
+    food_out = {'data': [food_trace, mineral_trace], 
+            'layout': go.Layout(xaxis= x_range, 
+                yaxis=dict(range = [min(min(food), min(minerals)), max(max(food), max(minerals))]))}
+    wealth_out = {'data': [richest_trace, poorest_trace, disparity_trace],
+             'layout': go.Layout(xaxis=x_range,
+                yaxis=dict(range=[min(poorest), max(richest)]))}
+
+    return gdp_out, food_out, wealth_out
 
 if __name__ == "__main__":
     app.run_server()

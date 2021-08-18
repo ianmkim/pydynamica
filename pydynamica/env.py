@@ -66,6 +66,9 @@ class Env():
         avg_mineral_value = 0
         max_age = 0
 
+        max_wealth = self.agents[0].money
+        min_wealth = self.agents[0].money
+
         for (i, agent) in enumerate(self.agents):
             within_radius = self.find_within_radius(agent, self.agents)
             death = agent.step(within_radius, self.terrain[agent.position[0]][agent.position[1]], self.dim)
@@ -77,6 +80,10 @@ class Env():
                 avg_age += agent.age
                 if agent.age > max_age:
                     max_age = agent.age
+                if agent.money > max_wealth:
+                    max_wealth = agent.money
+                if agent.money < min_wealth:
+                    min_wealth = agent.money
                 next_gen.append(agent)
 
         self.agents = next_gen
@@ -105,11 +112,15 @@ class Env():
         print(f"GDP per Capita: {gdp_per_cap}")
         print(f"Average value of food: {avg_food_value}")
         print(f"Average value of minerals: {avg_mineral_value}")
+        print(f"Wealth of wealthiest agent: {max_wealth}" )
+        print(f"Wealth of poorest agent: {min_wealth}" )
         print()
 
         return {"avg_age": avg_age,
                 "max_age": max_age,
                 "gdp_per_cap": gdp_per_cap,
                 "avg_food_value": avg_food_value,
-                "avg_mineral_value": avg_mineral_value}
+                "avg_mineral_value": avg_mineral_value,
+                "max_wealth": max_wealth,
+                "min_wealth": min_wealth}
         
