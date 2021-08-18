@@ -127,15 +127,17 @@ class Agent():
         self.wealth_food -= self.consume_rate
         self.wealth_minerals -= self.consume_rate
 
-    def collect(self, tile):
+    def collect(self, tile, abundance):
         tile = Resources(tile)
+        to_collect = min(self.collection_rate, abundance)
         if tile == Resources.food:
-            self.wealth_food += self.collection_rate
+            self.wealth_food += to_collect
         if tile == Resources.mineral:
-            self.wealth_minerals += self.collection_rate
+            self.wealth_minerals += to_collect
+        return to_collect
 
 
-    def step(self, neighbors:list, tile:Resources, bounds:list):
+    def step(self, neighbors:list, tile:Resources, abundance:float, bounds:list):
         # move on the map
         self.move(bounds)
         self.age += 1
@@ -147,11 +149,11 @@ class Agent():
                 if self.purchase(neighbor):
                     break
 
-        self.collect(tile)
+        collected = self.collect(tile, abundance)
         self.consume()
         self.adjust_internal_value()
 
         # print(self.wealth_food, self.wealth_minerals)
         # print(f"Money: {self.money}")
 
-        return self.check_death(2)
+        return self.check_death(2), collected

@@ -44,6 +44,15 @@ def create_perlin(x, y, res = 5, seed=None):
 
 if __name__ == "__main__":
     perl = create_perlin(100,50 )
+    mx= 0.0
+    mn= perl[0][0]
+    for row in perl:
+        if max(row) >mx:
+            mx= max(row)
+        if min(row) <mn:
+            mn= min(row) 
+    print(mx)
+    print(mn)
     plt.imshow(perl, origin="upper")
     plt.show()
     print("showing image")

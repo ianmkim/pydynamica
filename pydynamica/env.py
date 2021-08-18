@@ -35,7 +35,7 @@ class Env():
         self.iters = 0
 
         self.dim = dim
-        self.terrain = create_grid_world_parallel(dim[0], dim[1])
+        self.terrain, self.abundance = create_grid_world_parallel(dim[0], dim[1])
 
     def find_within_radius(self, current, remaining):
         """
@@ -70,8 +70,10 @@ class Env():
         min_wealth = self.agents[0].money
 
         for (i, agent) in enumerate(self.agents):
+            agent_x, agent_y= agent.position[0], agent.position[1]
             within_radius = self.find_within_radius(agent, self.agents)
-            death = agent.step(within_radius, self.terrain[agent.position[0]][agent.position[1]], self.dim)
+            death, collected = agent.step(within_radius, self.terrain[agent_x][agent_y], self.abundance[agent_x][agent_y], self.dim)
+            self.abundance[agent_x][agent_y] -= collected
 
             avg_food_value += agent.internal_food_value
             avg_mineral_value += agent.internal_mineral_value
