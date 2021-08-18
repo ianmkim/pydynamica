@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import multiprocessing
 
 import numpy as np
-import perlin
+import pydynamica.perlin as perlin
 
 from enum import Enum
 class Resources(Enum):

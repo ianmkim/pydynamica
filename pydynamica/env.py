@@ -1,5 +1,5 @@
-from agent import Agent
-from terrain import Resources, create_grid_world_parallel
+from pydynamica.agent import Agent
+from pydynamica.terrain import Resources, create_grid_world_parallel
 import numpy as np
 import random
 

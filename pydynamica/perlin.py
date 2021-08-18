@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def perlin(x, y, seed=None):
+def gen_perlin(x, y, seed=None):
     if seed is not None:
         np.random.seed(seed)
     p = np.arange(256, dtype=int)
@@ -39,7 +39,7 @@ def create_perlin(x, y, res = 5, seed=None):
     xlin = np.linspace(0, res, x)
     ylin = np.linspace(0, res, y)
     x, y = np.meshgrid(xlin, ylin)
-    map = perlin(x, y, seed=seed)
+    map = gen_perlin(x, y, seed=seed)
     return map
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-from terrain import Resources
+from pydynamica.terrain import Resources
 import random
 
 class Agent():
