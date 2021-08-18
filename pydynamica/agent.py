@@ -45,7 +45,6 @@ class Agent():
     def purchase(self, other) -> bool:
         self.food_want_to_sell = self.wealth_food * self.risk
         self.mineral_want_to_sell = self.wealth_minerals * self.risk
-
         purchased = False
 
         # it makes logical sense that the agent would consider food before he considers minerals as one is more vital than the other
@@ -61,6 +60,7 @@ class Agent():
 
             self.money -= amount_to_purchase
             other.money += amount_to_purchase
+            #print(f"Food traded: {amount_to_purchase}")
             purchased = True
         else:
             self.food_sold_last_round = 0
@@ -76,6 +76,7 @@ class Agent():
 
             self.money -= amount_to_purchase
             other.money += amount_to_purchase
+            #print(f"Mineral traded: {amount_to_purchase}")
             purchased = True
         else:
             self.mineral_sold_last_round = 0
@@ -127,6 +128,7 @@ class Agent():
         self.wealth_minerals -= self.consume_rate
 
     def collect(self, tile):
+        tile = Resources(tile)
         if tile == Resources.food:
             self.wealth_food += self.collection_rate
         if tile == Resources.mineral:
@@ -136,14 +138,20 @@ class Agent():
     def step(self, neighbors:list, tile:Resources, bounds:list):
         # move on the map
         self.move(bounds)
+        self.age += 1
 
         # randomly search up to 10 neighbors until a search can be made
         for _ in range(self.max_trades_per_step):
-            neighbor = random.choice(neighbors)
-            if self.purchase(neighbor):
-                break
+            if len(neighbors) != 0:
+                neighbor = random.choice(neighbors)
+                if self.purchase(neighbor):
+                    break
 
-        self.check_death(2)
         self.collect(tile)
         self.consume()
         self.adjust_internal_value()
+
+        # print(self.wealth_food, self.wealth_minerals)
+        # print(f"Money: {self.money}")
+
+        return self.check_death(2)
