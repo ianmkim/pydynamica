@@ -1,6 +1,7 @@
 # PyDynamica
 PyDynamica is a pure python implementation of Sociodynamica, a virtual environment to simulate a simple economy with minimal dependencies.
 
+
 # Installation
 `
 pip3 install -r requirements.txt
@@ -9,6 +10,10 @@ pip3 install -r requirements.txt
 `
 python3 visualizer.py or python3 run_cli.py
 `
+
+## Visualizer
+<img src="https://github.com/parvusvox/pydynamica/blog/master/docs/stats1.jpg?raw=true" width="100%">
+<img src="https://github.com/parvusvox/pydynamica/blog/master/docs/stats2.jpg?raw=true" width="100%">
 
 ## How good of a model is this?
 Not very. But even so, we can still learn a lot from this simple model, testing different economic hypotheses. A full economic analysis is coming soon.
