@@ -110,8 +110,8 @@ def update_graph_scatter(n):
 
     gdp_trace = create_trace(y, "GDP per capita")
 
-    richest_trace = create_trace(richest, "Wealth of top 10%")
-    poorest_trace = create_trace(poorest, "Wealth of bottom 10%")
+    richest_trace = create_trace(richest, "Wealth of top 25%")
+    poorest_trace = create_trace(poorest, "Wealth of bottom 25%")
     disparity_trace = create_trace(disparity, "Wealth Disparity")
 
     food_trace = create_trace(food, "Average food value")

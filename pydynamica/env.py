@@ -112,7 +112,7 @@ class Env():
         gdp_per_cap = self.calculate_gdp_per_capita()
 
         sorted_agents = sorted(self.agents, key=lambda a:a.money)
-        top_10_pc = int(len(self.agents) * 0.1)
+        top_10_pc = int(len(self.agents) * 0.25)
         max_wealth = sum([a.money for a in sorted_agents[-top_10_pc:]]) / top_10_pc
         min_wealth = sum([a.money for a in sorted_agents[:top_10_pc]])  / top_10_pc
 
