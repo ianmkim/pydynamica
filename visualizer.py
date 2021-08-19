@@ -70,10 +70,6 @@ app.layout = html.Div (
     ]
 )
 
-""" SIM ENV SETUP """
-env = Env(num_agents=100, dim=(50,50))
-data = []
-
 """ SIM & DATA COLLECTION"""
 def create_trace(data, title):
     return plotly.graph_objs.Scatter(
@@ -155,4 +151,8 @@ def update_graph_scatter(n):
     return gdp_out, food_out, wealth_out, meta_out, food_surface_out
 
 if __name__ == "__main__":
+    """ SIM ENV SETUP """
+    env = Env(num_agents=100, dim=(50,50))
+    data = []
+
     app.run_server()
