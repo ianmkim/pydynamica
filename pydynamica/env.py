@@ -40,6 +40,7 @@ class Env():
 
         self.dim = dim
         self.terrain, self.abundance = create_grid_world_parallel(dim[0], dim[1])
+        self.initial_abundance = self.calculate_abundance()
 
     def find_within_radius(self, current, remaining):
         """
@@ -74,10 +75,6 @@ class Env():
         avg_mineral_value = 0
         max_age = 0
 
-        max_wealth = self.agents[0].money
-        min_wealth = self.agents[0].money
-        
-
         for (i, agent) in enumerate(self.agents):
             agent_x, agent_y= agent.position[0], agent.position[1]
             within_radius = self.find_within_radius(agent, self.agents)
@@ -91,13 +88,12 @@ class Env():
                 avg_age += agent.age
                 if agent.age > max_age:
                     max_age = agent.age
-                if agent.money > max_wealth:
-                    max_wealth = agent.money
-                if agent.money < min_wealth:
-                    min_wealth = agent.money
                 next_gen.append(agent)
 
         self.agents = next_gen
+        death_rate = ((self.num_agents - len(self.agents))/self.num_agents) * 100
+        collection_rate = sum([a.collection_rate for a in self.agents]) / len(self.agents)
+        collection_rate_increase = (collection_rate/15 * 100)
 
         for _ in range(self.num_agents - len(self.agents)):
             position = [int(random.random() * self.dim[0]), int(random.random() * self.dim[1])]
@@ -115,7 +111,14 @@ class Env():
 
         gdp_per_cap = self.calculate_gdp_per_capita()
 
+        sorted_agents = sorted(self.agents, key=lambda a:a.money)
+        top_10_pc = int(len(self.agents) * 0.1)
+        max_wealth = sum([a.money for a in sorted_agents[-top_10_pc:]]) / top_10_pc
+        min_wealth = sum([a.money for a in sorted_agents[:top_10_pc]])  / top_10_pc
+
         self.iters += 1
+        abundance = self.calculate_abundance()
+        abundance_increase = (abundance / self.initial_abundance) * 100
         log(f"------------ Step {self.iters} ------------")
         log(f"Number of agent remaining: {len(self.agents)}")
         log(f"Average age of agent: {avg_age}")
@@ -123,9 +126,11 @@ class Env():
         log(f"GDP per Capita: {gdp_per_cap}")
         log(f"Average value of food: {avg_food_value}")
         log(f"Average value of minerals: {avg_mineral_value}")
-        log(f"Wealth of wealthiest agent: {max_wealth}" )
-        log(f"Wealth of poorest agent: {min_wealth}" )
-        log(f"Resource abundance: {self.calculate_abundance()}")
+        log(f"Wealth of wealthiest 10%: {max_wealth}" )
+        log(f"Wealth of poorest 10%: {min_wealth}" )
+        log(f"Resource abundance: {abundance}")
+        log(f"Death rate: {death_rate}%")
+        log(f"Average collection rate increase: {collection_rate}")
         log("")
 
         return {"avg_age": avg_age,
@@ -134,5 +139,8 @@ class Env():
                 "avg_food_value": avg_food_value,
                 "avg_mineral_value": avg_mineral_value,
                 "max_wealth": max_wealth,
-                "min_wealth": min_wealth}
+                "min_wealth": min_wealth,
+                "death_rate": death_rate,
+                "collection_rate": collection_rate_increase,
+                "abundance": abundance_increase}
         

@@ -32,21 +32,39 @@ richest.append(0)
 poorest.append(0)
 disparity.append(0)
 
+death_rate = deque(maxlen=window_len)
+collection_rate = deque(maxlen=window_len)
+resource_abundance = deque(maxlen=window_len)
+average_age_of_agent = deque(maxlen=window_len)
+
+death_rate.append(0)
+collection_rate.append(0)
+resource_abundance.append(0)
+average_age_of_agent.append(0)
+    
+
 """ DASHBOARD AND APP SETUP """
 app = dash.Dash(__name__)
 app.layout = html.Div (
     [
         html.H1(children='GDP Per Capita'),
         dcc.Graph(id='gdp-graph', animate=True),
+
         html.H1(children="Avg Internal Values"),
         dcc.Graph(id='food-graph', animate=True),
+
         html.H1(children="Wealth & Society"),
         dcc.Graph(id="wealth-graph", animate=True),
+
+        html.H1(children="Metadata"),
+        dcc.Graph(id='meta-graph', animate=True),
+        
         html.H1(children="Resources"),
         dcc.Graph(id="food-surface", animate=True),
+
         dcc.Interval(
             id="graph-update",
-            interval = 1000,
+            interval = 900,
             n_intervals=0,
         ),
     ]
@@ -66,7 +84,11 @@ def create_trace(data, title):
     )
 
 @app.callback(
-    [Output('gdp-graph', 'figure'), Output('food-graph', 'figure'), Output('wealth-graph', 'figure'), Output('food-surface','figure')],
+    [Output('gdp-graph', 'figure'), 
+        Output('food-graph', 'figure'), 
+        Output('wealth-graph', 'figure'), 
+        Output("meta-graph", 'figure'), 
+        Output('food-surface','figure')],
     [Input('graph-update', 'n_intervals')]
 )
 def update_graph_scatter(n):
@@ -81,15 +103,29 @@ def update_graph_scatter(n):
     richest.append(out['max_wealth'])
     poorest.append(out['min_wealth'])
     disparity.append(out['max_wealth'] - out['min_wealth'])
+
+    death_rate.append(out['death_rate'])
+    collection_rate.append(out['collection_rate'])
+    resource_abundance.append(out['abundance'])
+    average_age_of_agent.append(out['avg_age'])
     
+
+
+
     gdp_trace = create_trace(y, "GDP per capita")
 
-    richest_trace = create_trace(richest, "Wealth of Richest Agent")
-    poorest_trace = create_trace(poorest, "Wealth of Poorest Agent")
+    richest_trace = create_trace(richest, "Wealth of top 10%")
+    poorest_trace = create_trace(poorest, "Wealth of bottom 10%")
     disparity_trace = create_trace(disparity, "Wealth Disparity")
 
     food_trace = create_trace(food, "Average food value")
     mineral_trace = create_trace(minerals, "Average mineral value")
+
+    death_rate_trace = create_trace(death_rate, "Death rate (%)")
+    collection_rate_trace = create_trace(collection_rate, "Resource extraction efficiency increase (%)")
+    resource_abundance_trace = create_trace(resource_abundance, "Resource Abundance (%)")
+    average_age_of_agent_trace = create_trace(average_age_of_agent, "Average age")
+    
    
     x_range = dict(range=[min(x), max(x)])
 
@@ -104,11 +140,15 @@ def update_graph_scatter(n):
              'layout': go.Layout(xaxis=x_range,
                 yaxis=dict(range=[min(poorest), max(richest)]))}
 
+    meta_out = {'data': [death_rate_trace, collection_rate_trace, resource_abundance_trace],
+            'layout': go.Layout(xaxis=x_range,
+                yaxis=dict(range=[0 ,100]))}
+
     ''' 3D surface plots '''
     food_surface_out = {'data': [go.Surface(z=env.abundance)],
         'layout':go.Layout(title="Resource Abundance", width=500, height=500)}
 
-    return gdp_out, food_out, wealth_out, food_surface_out
+    return gdp_out, food_out, wealth_out, meta_out, food_surface_out
 
 if __name__ == "__main__":
     app.run_server()

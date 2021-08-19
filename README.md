@@ -55,11 +55,9 @@ The provided visualizer can show a couple interesting statistics about the econo
  - Resources: the wealth of the richest agent and the wealth of the poorest agent and the wealth disparity
 
 ### Todo
- - [ ] More statistics about wealth disparities and the top 1% (See if bernie is right)
- - [ ] Implement "innovation" (increase extraction efficienties and extraction difficulties)
- - [ ] Implement farmer agent
- - [ ] Implement trader agent
- - [ ] Implement miner agent
+ - [x] Mineral efficiency increase (innovation in capitalism)
+ - [x] More statistics about wealth disparities and the top 10% (See if bernie is right)
+ - [x] Implement "innovation" (increase extraction efficienties and extraction difficulties)
  - [ ] Implement replenishing resources
  - [ ] Make visualizer pretty
  - [ ] Implement Stalin

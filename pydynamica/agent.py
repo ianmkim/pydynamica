@@ -12,10 +12,20 @@ class Agent():
             consume_rate=0.1,
             money = 10,
             max_trades_per_step=10,
-            collection_rate=2):
+            collection_rate=2,
+            efficiency_increase_rate= 0.2,
+            efficiency_rate_decrease_rate = 0.9,
+            investment_threshold=5):
 
         self.age = 0
         self.id = id
+
+        # 1st derivative of efficiency
+        self.efficiency_increase_rate = efficiency_increase_rate
+        # 2nd derivative of efficiency
+        self.efficiency_rate_decrease_rate = efficiency_rate_decrease_rate
+        # how many minerals are needed to invest
+        self.investment_threshold = investment_threshold
 
         self.position = pos 
         self.speed = speed
@@ -29,6 +39,7 @@ class Agent():
         self.internal_food_value = random.random() * 5
         self.internal_mineral_value = random.random() * 10
 
+        # percent to discount rates if food is unsold
         self.unsold_discount_rate = 0.2
 
         # risk level determines how much an agent is willing to sell its stockpile at any given trade
@@ -44,6 +55,9 @@ class Agent():
         self.prev_minerals = self.wealth_minerals
         
         self.money = money
+
+    def calculate_score(self) -> float:
+        return self.wealth_food + self.wealth_minerals + self.money
 
     def purchase(self, other) -> bool:
         self.food_want_to_sell = self.wealth_food * self.risk
@@ -69,9 +83,16 @@ class Agent():
             self.food_sold_last_round = 0
         
         if other.internal_mineral_value < self.internal_mineral_value:
-            amount_to_purchase = min(other.internal_mineral_value * other.wealth_minerals * other.risk, 
-                    self.money * self.risk)
-            amount_in_units = amount_to_purchase / other.internal_food_value
+            amount_to_purchase = min(other.internal_mineral_value * other.wealth_minerals * other.risk, self.money * self.risk)
+            amount_in_units = amount_to_purchase / other.internal_mineral_value
+            # this should theoreticall never print
+            if(amount_in_units > other.wealth_minerals):
+                print("---------- ERROR -----------")
+                print(f"{other.internal_mineral_value * other.wealth_minerals * other.risk} | {self.money * self.risk}")
+                print(f"amount to purchase: {amount_to_purchase}")
+                print(f"other internal_value: {other.internal_mineral_value}")
+                print(f"amount in units to buy: {amount_in_units} | amount other has: {other.wealth_minerals}")
+                print()
 
             other.wealth_minerals -= amount_in_units
             self.wealth_minerals += amount_in_units
@@ -85,6 +106,15 @@ class Agent():
             self.mineral_sold_last_round = 0
 
         return purchased
+
+    def invest(self):
+        if self.wealth_minerals > self.investment_threshold: 
+            self.wealth_minerals -= self.investment_threshold
+            for _ in range(self.investment_threshold):
+                # increase collection efficiency
+                self.collection_rate *= 1.0 + self.efficiency_increase_rate
+                # propagate 2nd derivative to first derivative
+                self.efficiency_increase_rate *= self.efficiency_rate_decrease_rate
             
     def adjust_internal_value(self):
         score = self.calc_utility()
@@ -111,8 +141,10 @@ class Agent():
         if self.wealth_food <= 0:
             return True
         # minerals can save you from external danger through random chance
+        '''        
         if self.wealth_minerals < random.random() * danger:
             return True
+        '''
         return False
 
     def move(self, bounds):
@@ -128,7 +160,6 @@ class Agent():
 
     def consume(self):
         self.wealth_food -= self.consume_rate
-        self.wealth_minerals -= self.consume_rate
 
     def collect(self, tile, abundance):
         tile = Resources(tile)
@@ -153,6 +184,7 @@ class Agent():
                     break
 
         collected = self.collect(tile, abundance)
+        self.invest()
         self.consume()
         self.adjust_internal_value()
 
