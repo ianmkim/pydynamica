@@ -2,6 +2,7 @@ from pydynamica.agent import Agent
 from pydynamica.terrain import Resources, create_grid_world_parallel
 import numpy as np
 import random
+import statistics
 
 from pydynamica.utils import log
 
@@ -16,7 +17,8 @@ class Env():
             max_trades_per_step = 10,
             speed = 10,
             dim = (500,500),
-            starting_money = 10):
+            starting_money = 10,
+            resource_unlock_rate = 1.2):
         self.agents = []
         self.num_agents = num_agents
         self.contact_horizon = contact_horizon
@@ -35,6 +37,9 @@ class Env():
         self.starting_money = starting_money
         self.max_trades_per_step = max_trades_per_step
         self.collection_rate = collection_rate
+        self.resource_unlock_rate = resource_unlock_rate
+
+        self.last_collection_rate = 0
 
         self.iters = 0
 
@@ -66,6 +71,9 @@ class Env():
     def calculate_abundance(self) -> float:
         total = sum([sum(row) for row in self.abundance])
         return total 
+
+    def unlock_new_resources(self):
+        self.abundance = self.abundance * self.resource_unlock_rate 
             
     def step(self):
         next_gen = []
@@ -95,6 +103,10 @@ class Env():
         collection_rate = sum([a.collection_rate for a in self.agents]) / len(self.agents)
         collection_rate_increase = (collection_rate/15 * 100)
 
+        if collection_rate - self.last_collection_rate >= 1:
+            self.unlock_new_resources() 
+        self.last_collection_rate = collection_rate
+
         for _ in range(self.num_agents - len(self.agents)):
             position = [int(random.random() * self.dim[0]), int(random.random() * self.dim[1])]
             self.agents.append(Agent(0,
@@ -113,8 +125,8 @@ class Env():
 
         sorted_agents = sorted(self.agents, key=lambda a:a.money)
         top_10_pc = int(len(self.agents) * 0.25)
-        max_wealth = sum([a.money for a in sorted_agents[-top_10_pc:]]) / top_10_pc
-        min_wealth = sum([a.money for a in sorted_agents[:top_10_pc]])  / top_10_pc
+        max_wealth = statistics.median([a.money for a in sorted_agents[-top_10_pc:]])
+        min_wealth = statistics.median([a.money for a in sorted_agents[:top_10_pc]])
 
         self.iters += 1
         abundance = self.calculate_abundance()
@@ -126,8 +138,8 @@ class Env():
         log(f"GDP per Capita: {gdp_per_cap}")
         log(f"Average value of food: {avg_food_value}")
         log(f"Average value of minerals: {avg_mineral_value}")
-        log(f"Wealth of wealthiest 10%: {max_wealth}" )
-        log(f"Wealth of poorest 10%: {min_wealth}" )
+        log(f"Median wealth of top 25%: {max_wealth}" )
+        log(f"Median wealth of bottom 25%: {min_wealth}" )
         log(f"Resource abundance: {abundance}")
         log(f"Death rate: {death_rate}%")
         log(f"Average collection rate increase: {collection_rate}")
