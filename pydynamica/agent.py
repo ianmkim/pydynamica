@@ -36,7 +36,7 @@ class Agent():
         self.wealth_food= 0
         self.wealth_minerals = 0
 
-        self.internal_food_value = random.random() * 5
+        self.internal_food_value = random.random() * 10
         self.internal_mineral_value = random.random() * 10
 
         # percent to discount rates if food is unsold
