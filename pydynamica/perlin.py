@@ -51,9 +51,6 @@ if __name__ == "__main__":
             mx= max(row)
         if min(row) <mn:
             mn= min(row) 
-    print(mx)
-    print(mn)
     plt.imshow(perl, origin="upper")
     plt.show()
-    print("showing image")
     

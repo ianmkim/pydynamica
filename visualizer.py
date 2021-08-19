@@ -42,6 +42,8 @@ app.layout = html.Div (
         dcc.Graph(id='food-graph', animate=True),
         html.H1(children="Wealth & Society"),
         dcc.Graph(id="wealth-graph", animate=True),
+        html.H1(children="Resources"),
+        dcc.Graph(id="food-surface", animate=True),
         dcc.Interval(
             id="graph-update",
             interval = 1000,
@@ -51,7 +53,7 @@ app.layout = html.Div (
 )
 
 """ SIM ENV SETUP """
-env = Env(num_agents=100, dim=(100,100))
+env = Env(num_agents=100, dim=(50,50))
 data = []
 
 """ SIM & DATA COLLECTION"""
@@ -64,7 +66,7 @@ def create_trace(data, title):
     )
 
 @app.callback(
-    [Output('gdp-graph', 'figure'), Output('food-graph', 'figure'), Output('wealth-graph', 'figure')],
+    [Output('gdp-graph', 'figure'), Output('food-graph', 'figure'), Output('wealth-graph', 'figure'), Output('food-surface','figure')],
     [Input('graph-update', 'n_intervals')]
 )
 def update_graph_scatter(n):
@@ -91,6 +93,7 @@ def update_graph_scatter(n):
    
     x_range = dict(range=[min(x), max(x)])
 
+    ''' Line graphs '''
     gdp_out = {'data': [gdp_trace],
             'layout': go.Layout(xaxis= x_range, 
                 yaxis=dict(range = [min(y), max(y)]))}
@@ -101,7 +104,11 @@ def update_graph_scatter(n):
              'layout': go.Layout(xaxis=x_range,
                 yaxis=dict(range=[min(poorest), max(richest)]))}
 
-    return gdp_out, food_out, wealth_out
+    ''' 3D surface plots '''
+    food_surface_out = {'data': [go.Surface(z=env.abundance)],
+        'layout':go.Layout(title="Resource Abundance", width=500, height=500)}
+
+    return gdp_out, food_out, wealth_out, food_surface_out
 
 if __name__ == "__main__":
     app.run_server()

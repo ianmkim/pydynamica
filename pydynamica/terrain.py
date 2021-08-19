@@ -15,7 +15,10 @@ def calculate_dominant(dominant_arr) -> int:
     return np.argmax(dominant_arr)
 
 def calculate_abundance(dominant_arr) -> float:
-    return (dominant_arr[np.argmax(dominant_arr)] +0.5) * 100
+    am = np.argmax(dominant_arr)
+    if Resources(am) == Resources.empty:
+        return 0
+    return (dominant_arr[am] + 0.5) * 10
 
 def create_grid_world_parallel(x:int, y:int) -> np.array:
     mineral_map = perlin.create_perlin(x, y).flatten()
@@ -45,8 +48,7 @@ def create_grid_world(x:int, y:int) -> np.array:
                     mineral_map[i][j],
                     food_map[i][j]]
             key_map[i][j] = np.argmax(dominant)
-            abundance_map[i][j] = (dominant[key_map[i][j]] + 0.5) * 100
-
+            abundance_map[i][j] = (dominant[key_map[i][j]] + 0.5) *10
     return key_map, abundance_map
 
 if __name__ == "__main__":

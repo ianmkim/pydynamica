@@ -3,9 +3,13 @@ from pydynamica.terrain import Resources, create_grid_world_parallel
 import numpy as np
 import random
 
+from pydynamica.utils import log
+
+# default configs
+# collection_rate = 2
 class Env():
     def __init__(self,
-            num_agents = 500,
+            num_agents =500,
             contact_horizon = 200,
             consume_rate = 0.1,
             collection_rate = 2,
@@ -57,6 +61,10 @@ class Env():
             gdp += agent.wealth_food + agent.wealth_minerals + agent.money
         gdp /= len(self.agents)
         return gdp
+
+    def calculate_abundance(self) -> float:
+        total = sum([sum(row) for row in self.abundance])
+        return total 
             
     def step(self):
         next_gen = []
@@ -68,6 +76,7 @@ class Env():
 
         max_wealth = self.agents[0].money
         min_wealth = self.agents[0].money
+        
 
         for (i, agent) in enumerate(self.agents):
             agent_x, agent_y= agent.position[0], agent.position[1]
@@ -107,16 +116,17 @@ class Env():
         gdp_per_cap = self.calculate_gdp_per_capita()
 
         self.iters += 1
-        print(f"------------ Step {self.iters} ------------")
-        print(f"Number of agent remaining: {len(self.agents)}")
-        print(f"Average age of agent: {avg_age}")
-        print(f"Age of oldest agent: {max_age}")
-        print(f"GDP per Capita: {gdp_per_cap}")
-        print(f"Average value of food: {avg_food_value}")
-        print(f"Average value of minerals: {avg_mineral_value}")
-        print(f"Wealth of wealthiest agent: {max_wealth}" )
-        print(f"Wealth of poorest agent: {min_wealth}" )
-        print()
+        log(f"------------ Step {self.iters} ------------")
+        log(f"Number of agent remaining: {len(self.agents)}")
+        log(f"Average age of agent: {avg_age}")
+        log(f"Age of oldest agent: {max_age}")
+        log(f"GDP per Capita: {gdp_per_cap}")
+        log(f"Average value of food: {avg_food_value}")
+        log(f"Average value of minerals: {avg_mineral_value}")
+        log(f"Wealth of wealthiest agent: {max_wealth}" )
+        log(f"Wealth of poorest agent: {min_wealth}" )
+        log(f"Resource abundance: {self.calculate_abundance()}")
+        log("")
 
         return {"avg_age": avg_age,
                 "max_age": max_age,

@@ -1,6 +1,9 @@
 from pydynamica.terrain import Resources
 import random
 
+# ORIGINAL PARAMS
+# consume rate = 0.1
+# collection rate = 2
 class Agent():
     def __init__(self, 
             id,
