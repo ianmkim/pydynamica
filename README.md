@@ -62,6 +62,8 @@ The provided visualizer can show a couple interesting statistics about the econo
  - [ ] Implement miner agent
  - [ ] Implement replenishing resources
  - [ ] Make visualizer pretty
+ - [ ] Implement Stalin
+ - [ ] Implement income tax & wealth tax at different rates
  
 
 ### Bugs & Qs
