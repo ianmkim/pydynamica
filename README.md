@@ -4,6 +4,7 @@ PyDynamica is a pure python implementation of Sociodynamica, a virtual environme
 # Installation
 `
 pip3 install -r requirements.txt
+
 python3 visualizer.py or python3 run_cli.py
 `
 
