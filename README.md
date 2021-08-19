@@ -10,6 +10,7 @@ pip3 install -r requirements.txt
 `
 python3 visualizer.py or python3 run_cli.py
 `
+After the installation is complete and the server is running, open a web browser and navigate to http://localhost:8050 to see the visualizer.
 
 ## Visualizer
 <img src="https://github.com/parvusvox/pydynamica/blob/master/docs/stats1.png?raw=true" width="100%">
