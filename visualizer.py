@@ -10,7 +10,7 @@ from collections import deque
 
 from pydynamica.env import Env
 
-window_len = 20
+window_len = 40
 
 """ DATA QUEUE INIT """
 x = deque(maxlen = window_len)
