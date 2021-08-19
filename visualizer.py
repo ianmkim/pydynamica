@@ -130,19 +130,23 @@ def update_graph_scatter(n):
     x_range = dict(range=[min(x), max(x)])
 
     ''' Line graphs '''
-    gdp_out = {'data': [gdp_trace],
-            'layout': go.Layout(xaxis= x_range, 
-                yaxis=dict(range = [min(y), max(y)]))}
-    food_out = {'data': [food_trace, mineral_trace], 
-            'layout': go.Layout(xaxis= x_range, 
-                yaxis=dict(range = [min(min(food), min(minerals)), max(max(food), max(minerals))]))}
-    wealth_out = {'data': [richest_trace, poorest_trace, disparity_trace],
-             'layout': go.Layout(xaxis=x_range,
-                yaxis=dict(range=[min(poorest), max(richest)]))}
+    gdp_out = {
+        'data': [gdp_trace],
+        'layout': go.Layout(xaxis= x_range, yaxis=dict(range = [min(y), max(y)]))
+    }
+    food_out = {
+        'data': [food_trace, mineral_trace], 
+        'layout': go.Layout(xaxis= x_range, yaxis=dict(range = [min(min(food), min(minerals)), max(max(food), max(minerals))]))
+    }
+    wealth_out = {
+        'data': [richest_trace, poorest_trace, disparity_trace],
+        'layout': go.Layout(xaxis=x_range,yaxis=dict(range=[min(poorest), max(richest)]))
+    }
 
-    meta_out = {'data': [death_rate_trace, collection_rate_trace, resource_abundance_trace],
-            'layout': go.Layout(xaxis=x_range,
-                yaxis=dict(range=[0 ,100]))}
+    meta_out = {
+        'data': [death_rate_trace, collection_rate_trace, resource_abundance_trace],
+        'layout': go.Layout(xaxis=x_range,yaxis=dict(range=[0 ,100]))
+    }
 
     ''' 3D surface plots '''
     food_surface_out = {'data': [go.Surface(z=env.abundance)],
