@@ -10,13 +10,13 @@ from pydynamica.utils import log
 # collection_rate = 2
 class Env():
     def __init__(self,
-            num_agents =500,
+            num_agents = 100,
             contact_horizon = 200,
             consume_rate = 0.1,
             collection_rate = 2,
             max_trades_per_step = 10,
             speed = 10,
-            dim = (500,500),
+            dim = (100,100),
             starting_money = 10,
             resource_unlock_rate = 1.2):
         self.agents = []
