@@ -10,6 +10,7 @@ class Resources(Enum):
     empty = 0
     mineral = 1
     food = 2
+    water = 3
 
 def calculate_dominant(dominant_arr) -> int:
     return np.argmax(dominant_arr)
@@ -24,8 +25,9 @@ def create_grid_world_parallel(x:int, y:int) -> np.array:
     mineral_map = perlin.create_perlin(x, y).flatten()
     food_map = perlin.create_perlin(x, y).flatten()
     empty_map = perlin.create_perlin(x,y).flatten()
+    water_map = perlin.create_perlin(x, y).flatten()
 
-    inp = np.dstack((empty_map, mineral_map, food_map))[0]
+    inp = np.dstack((empty_map, mineral_map, food_map, water_map))[0]
 
     pool = multiprocessing.Pool()
     key_map = pool.map(calculate_dominant, inp)

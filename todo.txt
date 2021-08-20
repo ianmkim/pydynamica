@@ -1,3 +1,2 @@
 3) add new commodity
-4) change x axis
 5) specialization

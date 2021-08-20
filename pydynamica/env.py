@@ -80,6 +80,7 @@ class Env():
 
         avg_age = 0
         avg_food_value = 0
+        avg_water_value = 0
         avg_mineral_value = 0
         max_age = 0
 
@@ -90,6 +91,7 @@ class Env():
             self.abundance[agent_x][agent_y] -= collected
 
             avg_food_value += agent.internal_food_value
+            avg_water_value += agent.internal_water_value
             avg_mineral_value += agent.internal_mineral_value
 
             if not death:
@@ -119,6 +121,7 @@ class Env():
 
         avg_age /= self.num_agents
         avg_food_value /= self.num_agents
+        avg_water_value /= self.num_agents
         avg_mineral_value /= self.num_agents
 
         gdp_per_cap = self.calculate_gdp_per_capita()
@@ -137,6 +140,7 @@ class Env():
         log(f"Age of oldest agent: {max_age}")
         log(f"GDP per Capita: {gdp_per_cap}")
         log(f"Average value of food: {avg_food_value}")
+        log(f"Average value of water: {avg_water_value}")
         log(f"Average value of minerals: {avg_mineral_value}")
         log(f"Median wealth of top 25%: {max_wealth}" )
         log(f"Median wealth of bottom 25%: {min_wealth}" )
@@ -149,6 +153,7 @@ class Env():
                 "max_age": max_age,
                 "gdp_per_cap": gdp_per_cap,
                 "avg_food_value": avg_food_value,
+                "avg_water_value": avg_water_value,
                 "avg_mineral_value": avg_mineral_value,
                 "max_wealth": max_wealth,
                 "min_wealth": min_wealth,

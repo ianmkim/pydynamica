@@ -14,15 +14,18 @@ window_len = 1000
 
 """ DATA QUEUE INIT """
 x = deque(maxlen = window_len)
-x.append(1)
-
 y = deque(maxlen=window_len)
+
+x.append(1)
 y.append(0)
 
 food = deque(maxlen=window_len)
 minerals = deque(maxlen=window_len)
+water = deque(maxlen=window_len)
+
 food.append(0)
 minerals.append(0)
+water.append(0)
 
 richest = deque(maxlen=window_len)
 poorest = deque(maxlen=window_len)
@@ -95,10 +98,11 @@ def update_graph_scatter(n):
     
     food.append(out['avg_food_value'])
     minerals.append(out['avg_mineral_value'])
+    water.append(out['avg_water_value'])
     
     richest.append(out['max_wealth'])
     poorest.append(out['min_wealth'])
-    disparity.append(out['max_wealth'] - out['min_wealth'])
+    disparity.append(out['max_wealth'] / out['min_wealth'])
 
     death_rate.append(out['death_rate'])
     collection_rate.append(out['collection_rate'])
@@ -115,6 +119,7 @@ def update_graph_scatter(n):
     disparity_trace = create_trace(disparity, "Wealth Disparity")
 
     food_trace = create_trace(food, "Average food value")
+    water_trace = create_trace(water, "Average water value")
     mineral_trace = create_trace(minerals, "Average mineral value")
 
     death_rate_trace = create_trace(death_rate, "Death rate (%)")
@@ -128,15 +133,15 @@ def update_graph_scatter(n):
     ''' Line graphs '''
     gdp_out = {
         'data': [gdp_trace],
-        'layout': go.Layout(xaxis= x_range, yaxis=dict(range = [min(y), max(y)]))
+        'layout': go.Layout(xaxis= x_range, yaxis=dict(range = [min(y), max(y) + 10]))
     }
     food_out = {
-        'data': [food_trace, mineral_trace], 
-        'layout': go.Layout(xaxis= x_range, yaxis=dict(range = [min(min(food), min(minerals)), max(max(food), max(minerals))]))
+        'data': [food_trace, mineral_trace, water_trace], 
+        'layout': go.Layout(xaxis= x_range, yaxis=dict(range = [min(min(food), min(minerals)), max(max(food), max(minerals)) + 10]))
     }
     wealth_out = {
         'data': [richest_trace, poorest_trace, disparity_trace],
-        'layout': go.Layout(xaxis=x_range,yaxis=dict(range=[min(poorest), max(richest)]))
+        'layout': go.Layout(xaxis=x_range,yaxis=dict(range=[min(poorest), max([max(richest),max(disparity)])]))
     }
 
     meta_out = {
