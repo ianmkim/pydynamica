@@ -39,7 +39,7 @@ class Env():
         self.collection_rate = collection_rate
         self.resource_unlock_rate = resource_unlock_rate
 
-        self.last_collection_rate = 0
+        self.highest_collection_int = 0
 
         self.iters = 0
 
@@ -105,9 +105,9 @@ class Env():
         collection_rate = sum([a.collection_rate for a in self.agents]) / len(self.agents)
         collection_rate_increase = (collection_rate/15 * 100)
 
-        if collection_rate - self.last_collection_rate >= 1:
-            self.unlock_new_resources() 
-        self.last_collection_rate = collection_rate
+        if int(collection_rate) > self.highest_collection_int:
+            self.highest_collection_int = int(collection_rate)
+            self.unlock_new_resources()
 
         for _ in range(self.num_agents - len(self.agents)):
             position = [int(random.random() * self.dim[0]), int(random.random() * self.dim[1])]

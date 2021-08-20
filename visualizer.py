@@ -137,7 +137,7 @@ def update_graph_scatter(n):
     }
     food_out = {
         'data': [food_trace, mineral_trace, water_trace], 
-        'layout': go.Layout(xaxis= x_range, yaxis=dict(range = [min(min(food), min(minerals)), max(max(food), max(minerals)) + 10]))
+        'layout': go.Layout(xaxis= x_range, yaxis=dict(range = [min(min(food), min(minerals)), max(max(food), max(minerals)) + 1]))
     }
     wealth_out = {
         'data': [richest_trace, poorest_trace, disparity_trace],
@@ -146,7 +146,7 @@ def update_graph_scatter(n):
 
     meta_out = {
         'data': [death_rate_trace, collection_rate_trace, resource_abundance_trace],
-        'layout': go.Layout(xaxis=x_range,yaxis=dict(range=[0 ,100]))
+        'layout': go.Layout(xaxis=x_range,yaxis=dict(range=[0 , max(resource_abundance)]))
     }
 
     ''' 3D surface plots '''

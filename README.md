@@ -64,7 +64,8 @@ The provided visualizer can show a couple interesting statistics about the econo
  - [x] Mineral efficiency increase (innovation in capitalism)
  - [x] More statistics about wealth disparities and the top 10% (See if bernie is right)
  - [x] Implement "innovation" (increase extraction efficienties and extraction difficulties)
- - [ ] Implement replenishing resources
+ - [x] Implement replenishing resources
+ - [ ] How do we get the price to determine the innovation level?
  - [ ] Make visualizer pretty
  - [ ] Implement Stalin
  - [ ] Implement income tax & wealth tax at different rates

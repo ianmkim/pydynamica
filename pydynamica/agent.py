@@ -15,7 +15,8 @@ class Agent():
             collection_rate=2,
             efficiency_increase_rate= 0.2,
             efficiency_rate_decrease_rate = 0.9,
-            investment_threshold=5):
+            investment_threshold=5,
+            experience_efficiency_increase=1.005):
 
         self.age = 0
         self.id = id
@@ -26,6 +27,8 @@ class Agent():
         self.efficiency_rate_decrease_rate = efficiency_rate_decrease_rate
         # how many minerals are needed to invest
         self.investment_threshold = investment_threshold
+        # efficiency increase due to experience
+        self.experience_efficiency_increase = experience_efficiency_increase
 
         self.position = pos 
         self.speed = speed
@@ -203,6 +206,7 @@ class Agent():
         # move on the map
         self.move(bounds)
         self.age += 1
+        self.collection_rate *= self.experience_efficiency_increase
 
         # randomly search up to 10 neighbors until a search can be made
         for _ in range(self.max_trades_per_step):
