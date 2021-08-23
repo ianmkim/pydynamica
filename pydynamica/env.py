@@ -17,7 +17,7 @@ class Env():
             max_trades_per_step = 10,
             speed = 10,
             dim = (100,100),
-            starting_money = 10,
+            starting_money = 15,
             resource_unlock_rate = 1.2):
         self.agents = []
         self.num_agents = num_agents
@@ -105,9 +105,11 @@ class Env():
         collection_rate = sum([a.collection_rate for a in self.agents]) / len(self.agents)
         collection_rate_increase = (collection_rate/15 * 100)
 
+        ''' 
         if int(collection_rate) > self.highest_collection_int:
             self.highest_collection_int = int(collection_rate)
             self.unlock_new_resources()
+        '''
 
         for _ in range(self.num_agents - len(self.agents)):
             position = [int(random.random() * self.dim[0]), int(random.random() * self.dim[1])]

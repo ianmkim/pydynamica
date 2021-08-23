@@ -1,4 +1,5 @@
 from pydynamica.env import Env
+from pydynamica.utils import log
 
 class TaxedEnv(Env):
     def __init__(self, 
@@ -13,6 +14,7 @@ class TaxedEnv(Env):
         top_percentile = int(len(self.agents) * 0.25)
 
         wealth_collected = 0
+        
         for agent in sorted_agents[-top_percentile:]:
             amount = agent.money * self.taxation_rate
             wealth_collected += amount
@@ -22,6 +24,8 @@ class TaxedEnv(Env):
         amount_individual = wealth_collected/(len(bottom_agents))
         for agent in bottom_agents:
             agent.money += amount_individual
+
+        log(f"Total Wealth Taxed: {wealth_collected}")
 
         return super().step()
             

@@ -15,7 +15,7 @@ class Agent():
             collection_rate=2,
             efficiency_increase_rate= 0.2,
             efficiency_rate_decrease_rate = 0.9,
-            investment_threshold=5,
+            investment_threshold= 20,
             experience_efficiency_increase=1.005):
 
         self.age = 0
@@ -26,7 +26,7 @@ class Agent():
         # 2nd derivative of efficiency
         self.efficiency_rate_decrease_rate = efficiency_rate_decrease_rate
         # how many minerals are needed to invest
-        self.investment_threshold = investment_threshold
+        self.investment_threshold = int(random.random() * investment_threshold)
         # efficiency increase due to experience
         self.experience_efficiency_increase = experience_efficiency_increase
 
@@ -135,6 +135,9 @@ class Agent():
             for _ in range(self.investment_threshold):
                 # increase collection efficiency
                 self.collection_rate *= 1.0 + self.efficiency_increase_rate
+                # decrease consumption rate
+                # this simulates "unlocking" new resources
+                self.consume_rate *= 1.0 - self.efficiency_increase_rate
                 # propagate 2nd derivative to first derivative
                 self.efficiency_increase_rate *= self.efficiency_rate_decrease_rate
             
