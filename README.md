@@ -67,10 +67,10 @@ The provided visualizer can show a couple interesting statistics about the econo
  - [x] More statistics about wealth disparities and the top 10% (See if bernie is right)
  - [x] Implement "innovation" (increase extraction efficienties and extraction difficulties)
  - [x] Implement replenishing resources
- - [ ] How do we get the price to determine the innovation level?
- - [ ] Make visualizer pretty
+ - [x] How do we get the price to determine the innovation level?
+ - [x] Make visualizer pretty
  - [ ] Implement Stalin
- - [ ] Implement income tax & wealth tax at different rates
+ - [x] Implement income tax & wealth tax at different rates
  
 
 ### Bugs & Qs
