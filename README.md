@@ -1,6 +1,8 @@
 # PyDynamica
 PyDynamica is a pure python implementation of Sociodynamica, a virtual environment to simulate a simple economy with minimal dependencies.
 
+PyDynamica is loosely based on ideas presented by Axtell and Epstein in Growing Artificial Societies (https://wtf.tw/ref/epstein_axtell.pdf) and Klaus Jaffe's work in developing Agent based models to visualize ideas in classical economics. (https://arxiv.org/abs/1509.04264)
+
 
 # Installation
 `
