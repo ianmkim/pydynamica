@@ -18,12 +18,13 @@ class TaxedEnv(Env):
         for agent in sorted_agents[-top_percentile:]:
             amount = agent.money * self.taxation_rate
             wealth_collected += amount
-            agent.money -= amount
+            agent.money = agent.money - amount
 
         bottom_agents = sorted_agents[:top_percentile]
+        print(wealth_collected)
         amount_individual = wealth_collected/(len(bottom_agents))
         for agent in bottom_agents:
-            agent.money += amount_individual
+            agent.money = agent.money + amount_individual
 
         log(f"Total Wealth Taxed: {wealth_collected}")
 

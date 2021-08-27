@@ -1,6 +1,8 @@
 from pydynamica.terrain import Resources
 import random
 
+from random import gauss
+
 # ORIGINAL PARAMS
 # consume rate = 0.1
 # collection rate = 2
@@ -20,13 +22,14 @@ class Agent():
 
         self.age = 0
         self.id = id
+        self.laziness = gauss(0.5, 0.1)
 
         # 1st derivative of efficiency
         self.efficiency_increase_rate = efficiency_increase_rate
         # 2nd derivative of efficiency
         self.efficiency_rate_decrease_rate = efficiency_rate_decrease_rate
         # how many minerals are needed to invest
-        self.investment_threshold = int(random.random() * investment_threshold)
+        self.investment_threshold = int(random.random() * investment_threshold * (self.laziness * 2))
         # efficiency increase due to experience
         self.experience_efficiency_increase = experience_efficiency_increase
 
@@ -110,6 +113,9 @@ class Agent():
             # this should theoreticall never print
             if(amount_in_units > other.wealth_minerals):
                 print("---------- ERROR -----------")
+                print(f"Other mineral value {other.internal_mineral_value}")
+                print(f"Other mineral wealth {other.wealth_minerals}")
+                print(f"Other risk {other.risk}")
                 print(f"{other.internal_mineral_value * other.wealth_minerals * other.risk} | {self.money * self.risk}")
                 print(f"amount to purchase: {amount_to_purchase}")
                 print(f"other internal_value: {other.internal_mineral_value}")
@@ -195,7 +201,7 @@ class Agent():
 
     def collect(self, tile, abundance):
         tile = Resources(tile)
-        to_collect = min(self.collection_rate, abundance)
+        to_collect = min(self.collection_rate, abundance) * (1-self.laziness)
         if tile == Resources.food:
             self.wealth_food += to_collect
         if tile == Resources.water:
